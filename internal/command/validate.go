@@ -3,7 +3,6 @@ package command
 import (
 	"errors"
 	"fmt"
-	"strings"
 )
 
 var CmdArgLength = map[string]int{
@@ -18,11 +17,11 @@ var CmdArgLength = map[string]int{
 
 // ValidateInput validates the command and the argument length
 func ValidateInput(input []string) error {
-	if len(input) == 0 {
+	if len(input) == 0 || input[0] == "" {
 		return errors.New("empty input")
 	}
 
-	cmd := strings.ToLower(input[0])
+	cmd := input[0]
 	inputArgLength := len(input) - 1
 
 	argLength, ok := CmdArgLength[cmd]

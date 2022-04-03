@@ -29,3 +29,11 @@ func ReadAndPrintData(transaction *Transaction, datastore *Datastore, key string
 
 	fmt.Println(value)
 }
+
+func DeleteData(transaction *Transaction, datastore *Datastore, key string) {
+	if transaction == nil {
+		delete(datastore.data, key)
+	} else {
+		delete(transaction.data, key)
+	}
+}

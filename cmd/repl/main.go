@@ -14,14 +14,6 @@ func printRepl() {
 	fmt.Print("> ")
 }
 
-// canContinue checks if repl can be continued
-func canContinue(cmd string) bool {
-	if strings.EqualFold(command.Quit, cmd) {
-		return false
-	}
-	return true
-}
-
 // readInput reads the input from stdin
 func readInput(reader *bufio.Reader) ([]string, error) {
 	input, err := reader.ReadString('\n')
@@ -29,6 +21,12 @@ func readInput(reader *bufio.Reader) ([]string, error) {
 		return nil, err
 	}
 	inputList := strings.Split(strings.TrimSuffix(input, "\n"), " ")
+
+	// convert command to lowercase
+	if len(inputList) > 0 {
+		inputList[0] = strings.ToLower(inputList[0])
+	}
+
 	return inputList, nil
 }
 
@@ -51,10 +49,5 @@ func main() {
 		}
 
 		command.Execute(datastore, inputList)
-
-		if !canContinue(inputList[0]) {
-			fmt.Println("Exiting...")
-			return
-		}
 	}
 }

@@ -1,5 +1,10 @@
 package command
 
+import (
+	"fmt"
+	"os"
+)
+
 // command list
 const (
 	Write  = "write"
@@ -11,19 +16,22 @@ const (
 	Quit   = "quit"
 )
 
-func Execute(datastore *Datastore, input []string) error {
+func Execute(datastore *Datastore, input []string) {
 	switch input[0] {
 	case Write:
 		WriteData(GetCurrentTransaction(), datastore, input[1], input[2])
 	case Read:
 		ReadAndPrintData(GetCurrentTransaction(), datastore, input[1])
+	case Delete:
+		DeleteData(GetCurrentTransaction(), datastore, input[1])
 	case Start:
 		StartTransaction(datastore)
 	case Commit:
 		CommitTransaction(GetCurrentTransaction(), datastore)
 	case Abort:
 		AbortTransaction(GetCurrentTransaction())
+	case Quit:
+		fmt.Println("Exiting...")
+		os.Exit(0)
 	}
-
-	return nil
 }
