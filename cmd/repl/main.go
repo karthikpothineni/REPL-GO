@@ -33,6 +33,7 @@ func readInput(reader *bufio.Reader) ([]string, error) {
 }
 
 func main() {
+	datastore := command.NewDataStore()
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
@@ -40,12 +41,16 @@ func main() {
 		inputList, err := readInput(reader)
 		if err != nil {
 			fmt.Println("Error in reading input", err.Error())
+			continue
 		}
 
 		err = command.ValidateInput(inputList)
 		if err != nil {
 			fmt.Println(err.Error())
+			continue
 		}
+
+		command.Execute(datastore, inputList)
 
 		if !canContinue(inputList[0]) {
 			fmt.Println("Exiting...")
