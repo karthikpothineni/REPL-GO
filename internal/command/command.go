@@ -14,9 +14,15 @@ const (
 func Execute(datastore *Datastore, input []string) error {
 	switch input[0] {
 	case Write:
-		WriteData(GetLastTransaction(), datastore, input[1], input[2])
+		WriteData(GetCurrentTransaction(), datastore, input[1], input[2])
 	case Read:
-		ReadAndPrintData(GetLastTransaction(), datastore, input[1])
+		ReadAndPrintData(GetCurrentTransaction(), datastore, input[1])
+	case Start:
+		StartTransaction(datastore)
+	case Commit:
+		CommitTransaction(GetCurrentTransaction(), datastore)
+	case Abort:
+		AbortTransaction(GetCurrentTransaction())
 	}
 
 	return nil

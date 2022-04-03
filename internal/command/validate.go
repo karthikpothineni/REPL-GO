@@ -31,7 +31,7 @@ func ValidateInput(input []string) error {
 	}
 
 	if argLength != inputArgLength {
-		return fmt.Errorf("invalid number of arguments: %d", inputArgLength)
+		return fmt.Errorf("invalid number of arguments: %d, needed: %d", inputArgLength, argLength)
 	}
 
 	return nil
