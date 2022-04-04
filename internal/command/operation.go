@@ -1,11 +1,10 @@
 package command
 
 import (
-	"fmt"
-
 	"REPL-GO/internal/datastore"
 )
 
+// WriteData adds/updates the value for a key in transaction or store data
 func WriteData(transaction *Transaction, store *datastore.Datastore, key, value string) {
 	if transaction == nil {
 		store.Data[key] = value
@@ -14,7 +13,8 @@ func WriteData(transaction *Transaction, store *datastore.Datastore, key, value 
 	}
 }
 
-func ReadAndPrintData(transaction *Transaction, store *datastore.Datastore, key string) {
+// ReadData reads the value for a key from transaction or store data
+func ReadData(transaction *Transaction, store *datastore.Datastore, key string) (string, bool) {
 	var value string
 
 	var ok bool
@@ -25,14 +25,10 @@ func ReadAndPrintData(transaction *Transaction, store *datastore.Datastore, key 
 		value, ok = transaction.data[key]
 	}
 
-	if !ok {
-		fmt.Printf("key not found: %s \n", key)
-		return
-	}
-
-	fmt.Println(value)
+	return value, ok
 }
 
+// DeleteData deletes a key entry from transaction or store data
 func DeleteData(transaction *Transaction, store *datastore.Datastore, key string) {
 	if transaction == nil {
 		delete(store.Data, key)

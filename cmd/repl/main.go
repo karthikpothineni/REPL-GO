@@ -1,13 +1,13 @@
 package main
 
 import (
-	"REPL-GO/internal/datastore"
 	"bufio"
 	"fmt"
 	"os"
 	"strings"
 
 	"REPL-GO/internal/command"
+	"REPL-GO/internal/datastore"
 )
 
 // printRepl prints Repl prefix
@@ -33,7 +33,7 @@ func readInput(reader *bufio.Reader) ([]string, error) {
 }
 
 func main() {
-	store := datastore.NewDataStore()
+	store := datastore.NewDatastore()
 	reader := bufio.NewReader(os.Stdin)
 
 	for {

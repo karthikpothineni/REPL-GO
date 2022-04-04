@@ -18,20 +18,40 @@ const (
 	Quit   = "quit"
 )
 
+// Execute executes the operations for commands
 func Execute(store *datastore.Datastore, input []string) {
+	currTransaction := GetCurrentTransaction()
+
 	switch input[0] {
 	case Write:
-		WriteData(GetCurrentTransaction(), store, input[1], input[2])
+		WriteData(currTransaction, store, input[1], input[2])
 	case Read:
-		ReadAndPrintData(GetCurrentTransaction(), store, input[1])
+		value, ok := ReadData(currTransaction, store, input[1])
+		if !ok {
+			fmt.Printf("key not found: %s \n", input[1])
+			return
+		}
+
+		fmt.Println(value)
 	case Delete:
-		DeleteData(GetCurrentTransaction(), store, input[1])
+		DeleteData(currTransaction, store, input[1])
 	case Start:
-		StartTransaction(store)
+		newTransaction := NewTransaction()
+		newTransaction.Start(store)
 	case Commit:
-		CommitTransaction(GetCurrentTransaction(), store)
+		if currTransaction == nil {
+			fmt.Println("there is no transaction to commit")
+			return
+		}
+
+		currTransaction.Commit(store)
 	case Abort:
-		AbortTransaction(GetCurrentTransaction())
+		if currTransaction == nil {
+			fmt.Println("there is no transaction to abort")
+			return
+		}
+
+		currTransaction.Abort()
 	case Quit:
 		fmt.Println("Exiting...")
 		os.Exit(0)

@@ -1,74 +1,70 @@
 package command
 
 import (
-	"fmt"
-
 	"REPL-GO/internal/datastore"
 )
 
+// currentTransaction represents current running transaction
 var currentTransaction *Transaction
 
+// Transaction is a struct representing REPL transactions
 type Transaction struct {
 	data            map[string]string
 	prevTransaction *Transaction
 }
 
-func NewTransaction(data map[string]string, prevTransaction *Transaction) *Transaction {
+// NewTransaction returns the instance of Transaction
+func NewTransaction() *Transaction {
 	return &Transaction{
-		data:            data,
-		prevTransaction: prevTransaction,
+		data:            nil,
+		prevTransaction: nil,
 	}
 }
 
-func StartTransaction(store *datastore.Datastore) {
-	var transaction *Transaction
+// GetCurrentTransaction returns the current running transaction
+func GetCurrentTransaction() *Transaction {
+	return currentTransaction
+}
 
-	// create new transaction
+// Start updates the transaction data and previous transaction link
+func (transaction *Transaction) Start(store *datastore.Datastore) {
+	// get current running transaction
 	currTransaction := GetCurrentTransaction()
+
+	// update new transaction
 	if currTransaction != nil {
-		transaction = NewTransaction(copyMap(currTransaction.data), currTransaction)
+		transaction.data = copyMap(currTransaction.data)
+		transaction.prevTransaction = currTransaction
 	} else {
-		transaction = NewTransaction(copyMap(store.Data), nil)
+		transaction.data = copyMap(store.Data)
 	}
 
 	currentTransaction = transaction
 }
 
-func CommitTransaction(transaction *Transaction, store *datastore.Datastore) {
-	if transaction == nil {
-		fmt.Println("there is no transaction to commit")
-		return
-	}
-
+// Commit assigns current transaction data to previous transaction or datastore
+func (transaction *Transaction) Commit(store *datastore.Datastore) {
 	currentData := transaction.data
 
-	// assign current transaction data to previous transaction or datastore
 	if transaction.prevTransaction != nil {
 		transaction.prevTransaction.data = copyMap(currentData)
 	} else {
 		store.Data = copyMap(currentData)
 	}
 
-	UpdateCurrentTransaction(transaction)
+	transaction.updateCurrentTransaction()
 }
 
-func AbortTransaction(transaction *Transaction) {
-	if transaction == nil {
-		fmt.Println("there is no transaction to abort")
-		return
-	}
-
-	UpdateCurrentTransaction(transaction)
+// Abort aborts the transaction changes and updates current transaction
+func (transaction *Transaction) Abort() {
+	transaction.updateCurrentTransaction()
 }
 
-func UpdateCurrentTransaction(transaction *Transaction) {
+// updateCurrentTransaction updates the current transaction
+func (transaction *Transaction) updateCurrentTransaction() {
 	if transaction.prevTransaction != nil {
 		currentTransaction = transaction.prevTransaction
 	} else {
 		currentTransaction = nil
 	}
-}
-
-func GetCurrentTransaction() *Transaction {
-	return currentTransaction
 }

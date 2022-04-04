@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// CmdArgLength represents the command and its respective argument length mapping
 var CmdArgLength = map[string]int{
 	Write:  2,
 	Read:   1,
