@@ -2,22 +2,25 @@ package command
 
 import (
 	"fmt"
+
+	"REPL-GO/internal/datastore"
 )
 
-func WriteData(transaction *Transaction, datastore *Datastore, key, value string) {
+func WriteData(transaction *Transaction, store *datastore.Datastore, key, value string) {
 	if transaction == nil {
-		datastore.data[key] = value
+		store.Data[key] = value
 	} else {
 		transaction.data[key] = value
 	}
 }
 
-func ReadAndPrintData(transaction *Transaction, datastore *Datastore, key string) {
+func ReadAndPrintData(transaction *Transaction, store *datastore.Datastore, key string) {
 	var value string
+
 	var ok bool
 
 	if transaction == nil {
-		value, ok = datastore.data[key]
+		value, ok = store.Data[key]
 	} else {
 		value, ok = transaction.data[key]
 	}
@@ -30,9 +33,9 @@ func ReadAndPrintData(transaction *Transaction, datastore *Datastore, key string
 	fmt.Println(value)
 }
 
-func DeleteData(transaction *Transaction, datastore *Datastore, key string) {
+func DeleteData(transaction *Transaction, store *datastore.Datastore, key string) {
 	if transaction == nil {
-		delete(datastore.data, key)
+		delete(store.Data, key)
 	} else {
 		delete(transaction.data, key)
 	}

@@ -1,6 +1,10 @@
 package command
 
-import "fmt"
+import (
+	"fmt"
+
+	"REPL-GO/internal/datastore"
+)
 
 var currentTransaction *Transaction
 
@@ -16,7 +20,7 @@ func NewTransaction(data map[string]string, prevTransaction *Transaction) *Trans
 	}
 }
 
-func StartTransaction(datastore *Datastore) {
+func StartTransaction(store *datastore.Datastore) {
 	var transaction *Transaction
 
 	// create new transaction
@@ -24,13 +28,13 @@ func StartTransaction(datastore *Datastore) {
 	if currTransaction != nil {
 		transaction = NewTransaction(copyMap(currTransaction.data), currTransaction)
 	} else {
-		transaction = NewTransaction(copyMap(datastore.data), nil)
+		transaction = NewTransaction(copyMap(store.Data), nil)
 	}
 
 	currentTransaction = transaction
 }
 
-func CommitTransaction(transaction *Transaction, datastore *Datastore) {
+func CommitTransaction(transaction *Transaction, store *datastore.Datastore) {
 	if transaction == nil {
 		fmt.Println("there is no transaction to commit")
 		return
@@ -42,7 +46,7 @@ func CommitTransaction(transaction *Transaction, datastore *Datastore) {
 	if transaction.prevTransaction != nil {
 		transaction.prevTransaction.data = copyMap(currentData)
 	} else {
-		datastore.data = copyMap(currentData)
+		store.Data = copyMap(currentData)
 	}
 
 	UpdateCurrentTransaction(transaction)

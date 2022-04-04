@@ -1,6 +1,7 @@
 package main
 
 import (
+	"REPL-GO/internal/datastore"
 	"bufio"
 	"fmt"
 	"os"
@@ -20,6 +21,7 @@ func readInput(reader *bufio.Reader) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	inputList := strings.Split(strings.TrimSuffix(input, "\n"), " ")
 
 	// convert command to lowercase
@@ -31,12 +33,14 @@ func readInput(reader *bufio.Reader) ([]string, error) {
 }
 
 func main() {
-	datastore := command.NewDataStore()
+	store := datastore.NewDataStore()
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
 		printRepl()
+
 		inputList, err := readInput(reader)
+
 		if err != nil {
 			fmt.Println("Error in reading input", err.Error())
 			continue
@@ -48,6 +52,6 @@ func main() {
 			continue
 		}
 
-		command.Execute(datastore, inputList)
+		command.Execute(store, inputList)
 	}
 }

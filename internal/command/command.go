@@ -3,6 +3,8 @@ package command
 import (
 	"fmt"
 	"os"
+
+	"REPL-GO/internal/datastore"
 )
 
 // command list
@@ -16,18 +18,18 @@ const (
 	Quit   = "quit"
 )
 
-func Execute(datastore *Datastore, input []string) {
+func Execute(store *datastore.Datastore, input []string) {
 	switch input[0] {
 	case Write:
-		WriteData(GetCurrentTransaction(), datastore, input[1], input[2])
+		WriteData(GetCurrentTransaction(), store, input[1], input[2])
 	case Read:
-		ReadAndPrintData(GetCurrentTransaction(), datastore, input[1])
+		ReadAndPrintData(GetCurrentTransaction(), store, input[1])
 	case Delete:
-		DeleteData(GetCurrentTransaction(), datastore, input[1])
+		DeleteData(GetCurrentTransaction(), store, input[1])
 	case Start:
-		StartTransaction(datastore)
+		StartTransaction(store)
 	case Commit:
-		CommitTransaction(GetCurrentTransaction(), datastore)
+		CommitTransaction(GetCurrentTransaction(), store)
 	case Abort:
 		AbortTransaction(GetCurrentTransaction())
 	case Quit:
